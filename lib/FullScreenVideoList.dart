@@ -38,8 +38,8 @@ class FullScreenVideoListState extends State {
     String data = await rootBundle.loadString('assets/data.json');
     List<dynamic> list = jsonDecode(data);
     list.forEach((element) {
-      print(element["coverImgUrl"]);
-      print(element["url"]);
+//      print(element["coverImgUrl"]);
+//      print(element["url"]);
       datas.add(Video(element["url"],element["coverImgUrl"]));
     });
     setState(() {

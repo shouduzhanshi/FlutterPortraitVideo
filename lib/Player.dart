@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -22,15 +23,18 @@ class PlayerState extends State<Player> {
   static List<VideoPlayerController> player = new List();
   VideoPlayerController _controller;
   static bool isWakelock = false;
+
   @override
   void initState() {
     super.initState();
-    if(!isWakelock){
+    if (!isWakelock) {
       Wakelock.enable();
       isWakelock = true;
     }
     print("Wakelock.enable");
-    _controller = VideoPlayerController.asset("assets/"+new Random().nextInt(3).toString()+".mp4")
+    var url = "assets/v1.mp4";
+    print(url);
+    _controller = VideoPlayerController.asset(url)
       ..initialize().then((_) {
         _controller.play();
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
@@ -41,19 +45,25 @@ class PlayerState extends State<Player> {
 
   @override
   Widget build(BuildContext context) {
-    return (_controller != null && _controller.value.initialized)
-        ? Stack(
-            children: [
-              Center(
-                child: AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(_controller),
+    return WillPopScope(
+      onWillPop: ()async {
+        await _controller.dispose();
+        exit(0);
+      },
+      child: (_controller != null && _controller.value.initialized)
+          ? Stack(
+              children: [
+                Center(
+                  child: AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
+                  ),
                 ),
-              ),
-              PlayerControls(_controller)
-            ],
-          )
-        : Center(child: CupertinoActivityIndicator());
+                PlayerControls(_controller)
+              ],
+            )
+          : Center(child: CupertinoActivityIndicator()),
+    );
   }
 
   @override
@@ -64,7 +74,7 @@ class PlayerState extends State<Player> {
       _controller.dispose();
     }
     player.remove(_controller);
-    if(isWakelock&&player.length<=0){
+    if (isWakelock && player.length <= 0) {
       Wakelock.disable();
       isWakelock = false;
     }
