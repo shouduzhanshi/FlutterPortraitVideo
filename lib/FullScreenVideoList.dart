@@ -16,7 +16,7 @@ class FullScreenVideoList extends StatefulWidget {
 
 class FullScreenVideoListState extends State {
   List<Video> datas = new List<Video>();
-
+  //滚动监听
   ScrollController scrollController = ScrollController();
 
   Size size;
@@ -28,6 +28,7 @@ class FullScreenVideoListState extends State {
     // TODO: implement initState
     super.initState();
     scrollController.addListener(() {
+      //获取滚动范围,计算滚动停止时当前显示的数据位
       this.offset = scrollController.offset;
     });
     loadAsset();
@@ -68,6 +69,7 @@ class FullScreenVideoListState extends State {
     } else {
       var list = GridView.builder(
           controller: scrollController,
+          //关键代码.滑动自动翻页全靠这个实现
           physics: PageScrollPhysics(),
           padding: EdgeInsets.zero,
           itemCount: datas.length,
@@ -105,6 +107,7 @@ class FullScreenVideoListState extends State {
     );
   }
 
+  //滚动停止回调,在这里计算当前正在显示可播放视频的控件.
   bool onscroll(ScrollEndNotification notification) {
     var playPosition = (offset / size.height).ceil();
     //todo 需要关注这里的问题，算出来的位置会大于实际位置，仅发生在列表最后一个，

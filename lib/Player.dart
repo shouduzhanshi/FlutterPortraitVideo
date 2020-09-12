@@ -8,6 +8,9 @@ import 'package:wakelock/wakelock.dart';
 import 'PlayerControls.dart';
 import 'main.dart';
 
+/***
+ * 播放器部分,借鉴了部分(很多)Chewie_video的代码.实现视频播放能力.
+ */
 class Player extends StatefulWidget {
   Video video;
 
@@ -28,6 +31,7 @@ class PlayerState extends State<Player> {
   void initState() {
     super.initState();
     if (!isWakelock) {
+      //这里特殊处理, initState 会在上个视频 dispose 前调用,导致屏幕常亮失效.
       Wakelock.enable();
       isWakelock = true;
     }
@@ -59,6 +63,7 @@ class PlayerState extends State<Player> {
                     child: VideoPlayer(_controller),
                   ),
                 ),
+                //底部播控条
                 PlayerControls(_controller)
               ],
             )
