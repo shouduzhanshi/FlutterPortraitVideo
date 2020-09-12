@@ -32,7 +32,7 @@ class PlayerState extends State<Player> {
       isWakelock = true;
     }
     print("Wakelock.enable");
-    var url = "assets/v1.mp4";
+    var url = "assets/v2.mp4";
     print(url);
     _controller = VideoPlayerController.asset(url)
       ..initialize().then((_) {
